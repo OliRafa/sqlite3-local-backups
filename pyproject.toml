@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sqlite3-local-backups"
-version = "0.1.0"
+version = "0.2.0"
 description = "Automated backups for Sqlite3 production databases."
 authors = ["Rafael Oliveira <olirafa@proton.me>"]
 license = "The Unlicense"
@@ -23,3 +23,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 create-backup = "sqlite_local_backups.create_backup:create_backup"
+create-folder-structure = "sqlite_local_backups.create_folder_structure:create_folder_structure"
