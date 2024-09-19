@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 from subprocess import run
 
@@ -11,8 +12,11 @@ import click
 )
 def create_backup(input_path: Path, output_dir: Path):
     """Create a backup for a given database path."""
+    backup_file_name = (
+        f"{input_path.stem}-{datetime.now().strftime("%Y-%m-%dT%H-%M-%S")}.db"
+    )
     run(
-        ["sqlite3", input_path, f"vacuum into '{output_dir}/hue.db'"],
+        ["sqlite3", input_path, f"vacuum into '{output_dir}/{backup_file_name}'"],
         encoding="utf8",
         text=True,
     )
