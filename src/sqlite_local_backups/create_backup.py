@@ -1,8 +1,29 @@
+import sqlite3
 from datetime import datetime
 from pathlib import Path
-from subprocess import run
 
 import click
+
+
+class Sqlite3Connection:
+    def __init__(self, path: Path):
+        self.file_path = path
+
+    def __enter__(self) -> sqlite3.Connection:
+        try:
+            self.connection = sqlite3.connect(self.file_path)
+            return self.connection
+
+        except sqlite3.Error as error:
+            click.echo(error)
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        self.connection.close()
+
+
+def _backup_database_with_vacuum(path: Path, output_path: Path):
+    with Sqlite3Connection(path) as database:
+        database.execute(f"vacuum into '{output_path}'")
 
 
 def _create_hard_link(file_path: Path, hard_link_path: Path) -> None:
@@ -47,11 +68,7 @@ def create_backup(input_path: Path, output_dir: Path):
     monthly_file_path = monthly_dir.joinpath(monthly_file_name)
 
     click.echo(f"Creating backup of {input_path.name}...")
-    run(
-        ["sqlite3", input_path, f"vacuum into '{last_file_path}'"],
-        encoding="utf8",
-        text=True,
-    )
+    _backup_database_with_vacuum(input_path, last_file_path)
 
     click.echo(f"Replacing daily backup {daily_file_path} file this last backup...")
     _create_hard_link(last_file_path, daily_file_path)
