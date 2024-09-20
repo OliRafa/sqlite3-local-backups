@@ -5,12 +5,20 @@ from subprocess import run
 import click
 
 
-def _create_hard_link(file_path: Path, hardlink_path: Path) -> None:
+def _create_hard_link(file_path: Path, hard_link_path: Path) -> None:
     try:
-        hardlink_path.hardlink_to(file_path)
+        hard_link_path.hardlink_to(file_path)
     except FileExistsError:
-        hardlink_path.unlink()
-        hardlink_path.hardlink_to(file_path)
+        hard_link_path.unlink()
+        hard_link_path.hardlink_to(file_path)
+
+
+def _create_soft_link(file_path: Path, soft_link_path: Path) -> None:
+    try:
+        soft_link_path.symlink_to(file_path)
+    except FileExistsError:
+        soft_link_path.unlink()
+        soft_link_path.symlink_to(file_path)
 
 
 @click.command()
@@ -53,3 +61,21 @@ def create_backup(input_path: Path, output_dir: Path):
 
     click.echo(f"Replacing monthly backup {monthly_file_path} file this last backup...")
     _create_hard_link(last_file_path, monthly_file_path)
+
+    latest_file_name = f"{input_path.stem}-latest.db"
+
+    click.echo("Point last backup file to this last backup...")
+    latest_file_path = last_dir.joinpath(latest_file_name)
+    _create_soft_link(last_file_path, latest_file_path)
+
+    click.echo("Point latest daily backup to this last backup...")
+    latest_daily_file_path = daily_dir.joinpath(latest_file_name)
+    _create_soft_link(daily_file_path, latest_daily_file_path)
+
+    click.echo("Point latest weekly backup to this last backup...")
+    latest_weekly_file_path = weekly_dir.joinpath(latest_file_name)
+    _create_soft_link(weekly_file_path, latest_weekly_file_path)
+
+    click.echo("Point latest monthly backup to this last backup...")
+    latest_monthly_file_path = monthly_dir.joinpath(latest_file_name)
+    _create_soft_link(monthly_file_path, latest_monthly_file_path)
