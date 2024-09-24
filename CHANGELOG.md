@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.1.0](https://github.com/OliRafa/sqlite3-local-backups/compare/v1.0.0...v1.1.0) (2024-09-24)
+
+
+### Features
+
+* **delete-old-backups:** add backups retention policy enforcement ([6ff35e5](https://github.com/OliRafa/sqlite3-local-backups/commit/6ff35e54104ce8d50f2619a24f6c59f2ce51f9c2))
+
 # 1.0.0 (2024-09-24)
 
 
