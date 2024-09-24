@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1](https://github.com/OliRafa/sqlite3-local-backups/compare/v1.1.0...v1.1.1) (2024-09-24)
+
+
+### Bug Fixes
+
+* **entrypoint:** fix script not calling delete-old-backups function ([45952ba](https://github.com/OliRafa/sqlite3-local-backups/commit/45952ba9474e76583c68d4b663bba0cb5703df40))
+
 # [1.1.0](https://github.com/OliRafa/sqlite3-local-backups/compare/v1.0.0...v1.1.0) (2024-09-24)
 
 
