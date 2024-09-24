@@ -11,6 +11,7 @@ packages = [{ include = "sqlite_local_backups", from = "src" }]
 [tool.poetry.dependencies]
 python = "^3.12"
 click = "^8.1.7"
+python-dateutil = "^2.9.0.post0"
 
 [tool.poetry.group.dev.dependencies]
 commitizen = "^3.29.0"
@@ -23,3 +24,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 create-backup = "sqlite_local_backups.create_backup:create_backup"
 create-folder-structure = "sqlite_local_backups.create_folder_structure:create_folder_structure"
+delete-old-backups = "sqlite_local_backups.delete_old_backups:delete_old_backups"

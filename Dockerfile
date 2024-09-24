@@ -60,6 +60,7 @@ RUN --mount=type=cache,target=/root/.cache \
 FROM python-base AS production
 
 ENV BACKUPS_FOLDER_PATH="/backups"
+ENV BACKUP_KEEP_MINS=1440
 ENV BACKUP_KEEP_DAYS=7
 ENV BACKUP_KEEP_WEEKS=4
 ENV BACKUP_KEEP_MONTHS=6
