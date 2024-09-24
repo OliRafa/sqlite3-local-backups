@@ -60,6 +60,7 @@ RUN --mount=type=cache,target=/root/.cache \
 FROM python-base AS production
 
 ENV BACKUPS_FOLDER_PATH="/backups"
+ENV BACKUP_ON_START="FALSE"
 ENV BACKUP_KEEP_MINS=1440
 ENV BACKUP_KEEP_DAYS=7
 ENV BACKUP_KEEP_WEEKS=4
@@ -74,7 +75,16 @@ COPY --from=builder-base /app /app
 
 COPY entrypoint.sh /
 
-CMD /entrypoint.sh $DATABASE_PATH $BACKUPS_FOLDER_PATH
+CMD /entrypoint.sh \
+    $DATABASE_PATH \
+    $BACKUPS_FOLDER_PATH \
+    $SCHEDULE \
+    $BACKUP_KEEP_MINS \
+    $BACKUP_KEEP_DAYS \
+    $BACKUP_KEEP_WEEKS \
+    $BACKUP_KEEP_MONTHS \
+    $HEALTHCHECK_PORT \
+    $BACKUP_ON_START \
 
 HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -f "http://localhost:$HEALTHCHECK_PORT/" || exit 1
