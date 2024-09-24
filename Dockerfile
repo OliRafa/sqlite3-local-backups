@@ -32,6 +32,16 @@ RUN apt-get update && \
     curl \
     && apt-get clean
 
+# Install go-cron
+ARG GOCRONVER=v0.0.11
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+
+RUN set -x \
+	&& curl --fail --retry 4 --retry-all-errors -o /usr/local/bin/go-cron.gz -L https://github.com/prodrigestivill/go-cron/releases/download/$GOCRONVER/go-cron-$TARGETOS-$TARGETARCH.gz \
+	&& gzip -vnd /usr/local/bin/go-cron.gz \
+    && chmod a+x /usr/local/bin/go-cron
+
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 # The --mount will mount the buildx cache directory to where
 # Poetry and Pip store their cache so that they can re-use it
@@ -50,11 +60,20 @@ RUN --mount=type=cache,target=/root/.cache \
 FROM python-base AS production
 
 ENV BACKUPS_FOLDER_PATH="/backups"
+ENV BACKUP_KEEP_DAYS=7
+ENV BACKUP_KEEP_WEEKS=4
+ENV BACKUP_KEEP_MONTHS=6
 ENV DATABASE_PATH=""
+ENV HEALTHCHECK_PORT=8080
+ENV SCHEDULE="@daily"
 
+COPY --from=builder-base /usr/local/bin/go-cron /usr/local/bin/go-cron
 COPY --from=builder-base $VIRTUAL_ENV $VIRTUAL_ENV
 COPY --from=builder-base /app /app
 
 COPY entrypoint.sh /
 
 CMD /entrypoint.sh $DATABASE_PATH $BACKUPS_FOLDER_PATH
+
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f "http://localhost:$HEALTHCHECK_PORT/" || exit 1

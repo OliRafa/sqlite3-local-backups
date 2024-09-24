@@ -11,4 +11,4 @@ if [[ ! -d "$BACKUPS_FOLDER_PATH/daily" \
     create-folder-structure $BACKUPS_FOLDER_PATH
 fi
 
-create-backup $DATABASE_PATH $BACKUPS_FOLDER_PATH
+exec /usr/local/bin/go-cron -s "$SCHEDULE" -p "$HEALTHCHECK_PORT" $EXTRA_ARGS -- create-backup $DATABASE_PATH $BACKUPS_FOLDER_PATH
